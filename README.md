@@ -58,7 +58,7 @@ brew install paperfoot/tap/elicit
 cargo install elicit-cli
 
 # Prebuilt binary, no Rust needed
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/paperfoot/elicit-cli/releases/latest/download/elicit-installer.sh | sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/paperfoot/elicit-cli/releases/latest/download/elicit-cli-installer.sh | sh
 ```
 
 Then check it works:
