@@ -10,10 +10,24 @@ fn elicit() -> Command {
     Command::cargo_bin("elicit").unwrap()
 }
 
-/// Where the config file lives under a temp HOME on macOS (the platform these
-/// tests run on). `directories` maps to ~/Library/Application Support/elicit.
-fn macos_config_dir(home: &std::path::Path) -> std::path::PathBuf {
-    home.join("Library/Application Support/elicit")
+/// Config dir under a temp HOME, matching `directories::ProjectDirs` per OS.
+fn config_dir(home: &std::path::Path) -> std::path::PathBuf {
+    if cfg!(target_os = "macos") {
+        home.join("Library/Application Support/elicit")
+    } else {
+        home.join(".config/elicit")
+    }
+}
+
+/// A command with an isolated HOME (and XDG_CONFIG_HOME off macOS) so config
+/// resolution is deterministic on every CI runner, not just the dev's machine.
+fn elicit_home(home: &std::path::Path) -> Command {
+    let mut c = elicit();
+    c.env("HOME", home);
+    if !cfg!(target_os = "macos") {
+        c.env("XDG_CONFIG_HOME", home.join(".config"));
+    }
+    c
 }
 
 // ── Malformed config resilience ────────────────────────────────────────────
@@ -22,27 +36,22 @@ fn macos_config_dir(home: &std::path::Path) -> std::path::PathBuf {
 #[test]
 fn agent_info_works_with_malformed_config() {
     let tmp = tempfile::tempdir().unwrap();
-    let config_dir = macos_config_dir(tmp.path());
+    let config_dir = config_dir(tmp.path());
     std::fs::create_dir_all(&config_dir).unwrap();
     std::fs::write(config_dir.join("config.toml"), "{{invalid toml").unwrap();
 
-    elicit()
-        .env("HOME", tmp.path())
-        .arg("agent-info")
-        .assert()
-        .code(0);
+    elicit_home(tmp.path()).arg("agent-info").assert().code(0);
 }
 
 /// config path must work even with a broken config file.
 #[test]
 fn config_path_works_with_malformed_config() {
     let tmp = tempfile::tempdir().unwrap();
-    let config_dir = macos_config_dir(tmp.path());
+    let config_dir = config_dir(tmp.path());
     std::fs::create_dir_all(&config_dir).unwrap();
     std::fs::write(config_dir.join("config.toml"), "{{invalid toml").unwrap();
 
-    elicit()
-        .env("HOME", tmp.path())
+    elicit_home(tmp.path())
         .args(["config", "path"])
         .assert()
         .code(0);
@@ -52,12 +61,11 @@ fn config_path_works_with_malformed_config() {
 #[test]
 fn config_show_fails_with_malformed_config() {
     let tmp = tempfile::tempdir().unwrap();
-    let config_dir = macos_config_dir(tmp.path());
+    let config_dir = config_dir(tmp.path());
     std::fs::create_dir_all(&config_dir).unwrap();
     std::fs::write(config_dir.join("config.toml"), "{{invalid toml").unwrap();
 
-    elicit()
-        .env("HOME", tmp.path())
+    elicit_home(tmp.path())
         .args(["config", "show"])
         .assert()
         .code(2);
