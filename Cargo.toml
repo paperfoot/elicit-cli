@@ -6,6 +6,12 @@ rust-version = "1.85"
 description = "Agent-grade CLI for the Elicit research API: semantic paper search, clinical-trial search, research reports, and systematic reviews"
 license = "MIT"
 repository = "https://github.com/paperfoot/elicit-cli"
+homepage = "https://github.com/paperfoot/elicit-cli"
+documentation = "https://github.com/paperfoot/elicit-cli"
+readme = "README.md"
+keywords = ["elicit", "research", "literature-review", "academic", "cli"]
+categories = ["command-line-utilities", "science", "api-bindings"]
+exclude = [".github/", ".ritalin-proofs/"]
 
 [[bin]]
 name = "elicit"
@@ -34,3 +40,8 @@ lto = true
 codegen-units = 1
 strip = true
 opt-level = 3
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"

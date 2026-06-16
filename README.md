@@ -51,9 +51,14 @@ Elicit ships an official example CLI. It covers 3 of the 8 API endpoints and tur
 ## Install
 
 ```bash
-cargo install --path .              # from this repo
-cargo install --locked elicit       # from crates.io (once published)
-brew install paperfoot/tap/elicit   # Homebrew (once published)
+# Homebrew (macOS / Linux)
+brew install paperfoot/tap/elicit
+
+# Cargo (from crates.io)
+cargo install elicit
+
+# Prebuilt binary, no Rust needed
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/paperfoot/elicit-cli/releases/latest/download/elicit-installer.sh | sh
 ```
 
 Then check it works:
