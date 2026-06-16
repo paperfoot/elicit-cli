@@ -159,10 +159,7 @@ impl ElicitClient {
 
     // ── Endpoint 4: GET /reports ────────────────────────────────────────────
 
-    pub fn list_reports(
-        &self,
-        query: &[(&str, String)],
-    ) -> Result<ListReportsResponse, AppError> {
+    pub fn list_reports(&self, query: &[(&str, String)]) -> Result<ListReportsResponse, AppError> {
         let resp = self
             .authed(self.http.get(self.url("/reports")))
             .query(query)
@@ -172,11 +169,7 @@ impl ElicitClient {
 
     // ── Endpoint 5: GET /reports/{id} ───────────────────────────────────────
 
-    pub fn get_report(
-        &self,
-        id: &str,
-        include_body: bool,
-    ) -> Result<GetReportResponse, AppError> {
+    pub fn get_report(&self, id: &str, include_body: bool) -> Result<GetReportResponse, AppError> {
         let mut rb = self.authed(self.http.get(self.url(&format!("/reports/{id}"))));
         if include_body {
             rb = rb.query(&[("include", "reportBody")]);
@@ -199,10 +192,7 @@ impl ElicitClient {
 
     // ── Endpoint 7: GET /systematic-reviews ─────────────────────────────────
 
-    pub fn list_reviews(
-        &self,
-        query: &[(&str, String)],
-    ) -> Result<ListReviewsResponse, AppError> {
+    pub fn list_reviews(&self, query: &[(&str, String)]) -> Result<ListReviewsResponse, AppError> {
         let resp = self
             .authed(self.http.get(self.url("/systematic-reviews")))
             .query(query)
@@ -212,13 +202,11 @@ impl ElicitClient {
 
     // ── Endpoint 8: GET /systematic-reviews/{id} ────────────────────────────
 
-    pub fn get_review(
-        &self,
-        id: &str,
-        include_body: bool,
-    ) -> Result<GetReviewResponse, AppError> {
-        let mut rb =
-            self.authed(self.http.get(self.url(&format!("/systematic-reviews/{id}"))));
+    pub fn get_review(&self, id: &str, include_body: bool) -> Result<GetReviewResponse, AppError> {
+        let mut rb = self.authed(
+            self.http
+                .get(self.url(&format!("/systematic-reviews/{id}"))),
+        );
         if include_body {
             rb = rb.query(&[("include", "reportBody")]);
         }

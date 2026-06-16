@@ -131,7 +131,9 @@ pub fn load() -> Result<AppConfig, AppError> {
         }
     }
 
-    figment.extract().map_err(|e| AppError::Config(e.to_string()))
+    figment
+        .extract()
+        .map_err(|e| AppError::Config(e.to_string()))
 }
 
 // ── API key resolution ──────────────────────────────────────────────────────
@@ -172,7 +174,10 @@ pub fn resolve_api_key(flag: Option<&str>, config: &AppConfig) -> Result<String,
 /// Resolve the API key for display/diagnostics WITHOUT erroring when absent.
 /// Returns `(value, source)` where source is "flag", "env", "config", or
 /// "none".
-pub fn resolve_api_key_opt(flag: Option<&str>, config: &AppConfig) -> (Option<String>, &'static str) {
+pub fn resolve_api_key_opt(
+    flag: Option<&str>,
+    config: &AppConfig,
+) -> (Option<String>, &'static str) {
     if let Some(v) = flag {
         let v = v.trim();
         if !v.is_empty() {

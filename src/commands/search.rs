@@ -5,7 +5,12 @@ use crate::config::{self, AppConfig};
 use crate::error::AppError;
 use crate::output::{self, Ctx};
 
-pub fn run(ctx: Ctx, args: SearchArgs, api_key: Option<&str>, config: &AppConfig) -> Result<(), AppError> {
+pub fn run(
+    ctx: Ctx,
+    args: SearchArgs,
+    api_key: Option<&str>,
+    config: &AppConfig,
+) -> Result<(), AppError> {
     // Fail fast (exit 2) before any network call.
     let key = config::resolve_api_key(api_key, config)?;
 
@@ -50,7 +55,11 @@ pub fn run(ctx: Ctx, args: SearchArgs, api_key: Option<&str>, config: &AppConfig
         search_mode: mode,
         max_results: args.max_results,
         corpus: args.corpus.map(map_corpus),
-        filters: if filters.is_empty() { None } else { Some(filters) },
+        filters: if filters.is_empty() {
+            None
+        } else {
+            Some(filters)
+        },
     };
 
     let client = ElicitClient::new(&config.base_url, &key)?;
@@ -71,7 +80,10 @@ fn render_human(resp: &PaperSearchResponse) {
         println!("{}", "No papers found.".dimmed());
     } else {
         for (i, p) in resp.papers.iter().enumerate() {
-            let year = p.year.map(|y| y.to_string()).unwrap_or_else(|| "n.d.".into());
+            let year = p
+                .year
+                .map(|y| y.to_string())
+                .unwrap_or_else(|| "n.d.".into());
             println!("{} {}", format!("{}.", i + 1).dimmed(), p.title.bold());
             let authors = if p.authors.is_empty() {
                 "Unknown authors".to_string()

@@ -124,7 +124,10 @@ crate_name = "elicit"
 
     assert_eq!(json["data"]["status"], "managed_install");
     assert_eq!(json["data"]["install_source"], "bun");
-    assert_eq!(json["data"]["upgrade_command"], "bun update --global elicit");
+    assert_eq!(
+        json["data"]["upgrade_command"],
+        "bun update --global elicit"
+    );
 }
 
 #[test]

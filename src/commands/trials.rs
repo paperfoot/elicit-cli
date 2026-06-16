@@ -6,7 +6,12 @@ use crate::config::{self, AppConfig};
 use crate::error::AppError;
 use crate::output::{self, Ctx};
 
-pub fn run(ctx: Ctx, args: TrialsArgs, api_key: Option<&str>, config: &AppConfig) -> Result<(), AppError> {
+pub fn run(
+    ctx: Ctx,
+    args: TrialsArgs,
+    api_key: Option<&str>,
+    config: &AppConfig,
+) -> Result<(), AppError> {
     let key = config::resolve_api_key(api_key, config)?;
 
     if args.query.trim().is_empty() {
@@ -38,7 +43,11 @@ pub fn run(ctx: Ctx, args: TrialsArgs, api_key: Option<&str>, config: &AppConfig
         query: args.query.clone(),
         search_mode: mode,
         max_results: args.max_results,
-        trial_filters: if filters.is_empty() { None } else { Some(filters) },
+        trial_filters: if filters.is_empty() {
+            None
+        } else {
+            Some(filters)
+        },
     };
 
     let client = ElicitClient::new(&config.base_url, &key)?;

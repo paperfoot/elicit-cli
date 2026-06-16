@@ -131,7 +131,10 @@ pub fn emit_rate_limit(ctx: Ctx, rl: &crate::api::RateLimit) {
             .remaining
             .map(|r| r.to_string())
             .unwrap_or_else(|| "?".into());
-        let limit = rl.limit.map(|l| l.to_string()).unwrap_or_else(|| "?".into());
+        let limit = rl
+            .limit
+            .map(|l| l.to_string())
+            .unwrap_or_else(|| "?".into());
         eprintln!(
             "{}",
             format!("rate limit: {remaining}/{limit} remaining").dimmed()

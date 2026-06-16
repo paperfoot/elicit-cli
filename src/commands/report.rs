@@ -7,7 +7,12 @@ use crate::config::{self, AppConfig};
 use crate::error::AppError;
 use crate::output::{self, Ctx};
 
-pub fn run(ctx: Ctx, action: ReportAction, api_key: Option<&str>, config: &AppConfig) -> Result<(), AppError> {
+pub fn run(
+    ctx: Ctx,
+    action: ReportAction,
+    api_key: Option<&str>,
+    config: &AppConfig,
+) -> Result<(), AppError> {
     let key = config::resolve_api_key(api_key, config)?;
     let client = ElicitClient::new(&config.base_url, &key)?;
 
@@ -39,7 +44,10 @@ fn new(ctx: Ctx, client: &ElicitClient, args: ReportNewArgs) -> Result<(), AppEr
     let created = client.create_report(&req)?;
 
     if args.wait {
-        eprintln_human(ctx, &format!("report {} accepted; polling...", created.report_id));
+        eprintln_human(
+            ctx,
+            &format!("report {} accepted; polling...", created.report_id),
+        );
         let final_report = poll_report(
             ctx,
             client,
@@ -91,7 +99,14 @@ fn list(ctx: Ctx, client: &ElicitClient, args: ReportListArgs) -> Result<(), App
             return;
         }
         let mut table = comfy_table::Table::new();
-        table.set_header(vec!["Report ID", "Status", "Stage", "Source", "Created", "Title"]);
+        table.set_header(vec![
+            "Report ID",
+            "Status",
+            "Stage",
+            "Source",
+            "Created",
+            "Title",
+        ]);
         for item in &r.reports {
             table.add_row(vec![
                 item.report_id.clone(),
@@ -135,7 +150,11 @@ fn get(ctx: Ctx, client: &ElicitClient, args: ReportGetArgs) -> Result<(), AppEr
     Ok(())
 }
 
-fn surface_download(ctx: Ctx, report: &GetReportResponse, fmt: ReportDownloadArg) -> Result<(), AppError> {
+fn surface_download(
+    ctx: Ctx,
+    report: &GetReportResponse,
+    fmt: ReportDownloadArg,
+) -> Result<(), AppError> {
     let url = match fmt {
         ReportDownloadArg::Pdf => report.pdf_url.as_deref(),
         ReportDownloadArg::Docx => report.docx_url.as_deref(),

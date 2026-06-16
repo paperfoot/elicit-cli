@@ -634,6 +634,10 @@ mod wire_tests {
         };
         let v = serde_json::to_value(&req).unwrap();
         assert_eq!(v["researchQuestion"], "q");
-        assert_eq!(v.as_object().unwrap().len(), 1, "only researchQuestion should serialize");
+        assert_eq!(
+            v.as_object().unwrap().len(),
+            1,
+            "only researchQuestion should serialize"
+        );
     }
 }

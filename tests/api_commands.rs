@@ -93,7 +93,12 @@ fn report_list_no_key_exits_2_empty_stdout() {
 #[test]
 fn report_get_no_key_exits_2_empty_stdout() {
     let out = elicit_no_key()
-        .args(["--json", "report", "get", "00000000-0000-0000-0000-000000000000"])
+        .args([
+            "--json",
+            "report",
+            "get",
+            "00000000-0000-0000-0000-000000000000",
+        ])
         .output()
         .unwrap();
     assert_eq!(out.status.code(), Some(2));
@@ -113,7 +118,12 @@ fn review_new_no_key_exits_2_empty_stdout() {
 #[test]
 fn review_get_no_key_exits_2_empty_stdout() {
     let out = elicit_no_key()
-        .args(["--json", "review", "get", "00000000-0000-0000-0000-000000000000"])
+        .args([
+            "--json",
+            "review",
+            "get",
+            "00000000-0000-0000-0000-000000000000",
+        ])
         .output()
         .unwrap();
     assert_eq!(out.status.code(), Some(2));
@@ -165,7 +175,10 @@ fn doctor_human_mode_exits_2_and_keeps_stdout_clean() {
     assert_eq!(out.status.code(), Some(2));
     // Piped => JSON on stdout (the data report). Either way it must parse.
     let parsed: Result<serde_json::Value, _> = serde_json::from_slice(&out.stdout);
-    assert!(parsed.is_ok(), "doctor stdout must be valid JSON when piped");
+    assert!(
+        parsed.is_ok(),
+        "doctor stdout must be valid JSON when piped"
+    );
 }
 
 // ── Arg parsing without a key (no network) ─────────────────────────────────
@@ -267,7 +280,13 @@ fn search_keyword_mode_with_filters_exits_3() {
     // BEFORE any request, so the dummy key never triggers a network call.
     let out = elicit_dummy_key()
         .args([
-            "--json", "search", "foo", "--mode", "keyword", "--min-year", "2020",
+            "--json",
+            "search",
+            "foo",
+            "--mode",
+            "keyword",
+            "--min-year",
+            "2020",
         ])
         .output()
         .unwrap();
@@ -285,7 +304,13 @@ fn search_keyword_mode_with_filters_exits_3() {
 fn trials_keyword_mode_with_filters_exits_3() {
     let out = elicit_dummy_key()
         .args([
-            "--json", "trials", "semaglutide", "--mode", "keyword", "--phase", "PHASE3",
+            "--json",
+            "trials",
+            "semaglutide",
+            "--mode",
+            "keyword",
+            "--phase",
+            "PHASE3",
         ])
         .output()
         .unwrap();

@@ -83,14 +83,14 @@ pub fn run(ctx: Ctx, api_key: Option<&str>, config: &AppConfig) -> Result<(), Ap
                 } else {
                     CheckStatus::Warn
                 },
-                message: format!(
-                    "found via {source} ({})",
-                    config::mask_secret(key)
-                ),
+                message: format!("found via {source} ({})", config::mask_secret(key)),
                 suggestion: if looks_valid {
                     None
                 } else {
-                    Some("Elicit keys normally start with elk_live_ — double-check the value.".into())
+                    Some(
+                        "Elicit keys normally start with elk_live_ — double-check the value."
+                            .into(),
+                    )
                 },
             });
             true
@@ -99,7 +99,8 @@ pub fn run(ctx: Ctx, api_key: Option<&str>, config: &AppConfig) -> Result<(), Ap
             checks.push(DoctorCheck {
                 name: "api_key",
                 status: CheckStatus::Fail,
-                message: "no API key (checked --api-key, ELICIT_API_KEY, config keys.api_key)".into(),
+                message: "no API key (checked --api-key, ELICIT_API_KEY, config keys.api_key)"
+                    .into(),
                 suggestion: Some(
                     "Set ELICIT_API_KEY=elk_live_... from https://elicit.com/settings".into(),
                 ),
@@ -153,9 +154,15 @@ pub fn run(ctx: Ctx, api_key: Option<&str>, config: &AppConfig) -> Result<(), Ap
                         } else {
                             format!(
                                 "{}/{} requests remaining (resets at epoch {})",
-                                rl.remaining.map(|r| r.to_string()).unwrap_or_else(|| "?".into()),
-                                rl.limit.map(|l| l.to_string()).unwrap_or_else(|| "?".into()),
-                                rl.reset.map(|r| r.to_string()).unwrap_or_else(|| "?".into()),
+                                rl.remaining
+                                    .map(|r| r.to_string())
+                                    .unwrap_or_else(|| "?".into()),
+                                rl.limit
+                                    .map(|l| l.to_string())
+                                    .unwrap_or_else(|| "?".into()),
+                                rl.reset
+                                    .map(|r| r.to_string())
+                                    .unwrap_or_else(|| "?".into()),
                             )
                         };
                         checks.push(DoctorCheck {
@@ -197,9 +204,18 @@ pub fn run(ctx: Ctx, api_key: Option<&str>, config: &AppConfig) -> Result<(), Ap
     }
 
     let summary = DoctorSummary {
-        pass: checks.iter().filter(|c| c.status == CheckStatus::Pass).count(),
-        warn: checks.iter().filter(|c| c.status == CheckStatus::Warn).count(),
-        fail: checks.iter().filter(|c| c.status == CheckStatus::Fail).count(),
+        pass: checks
+            .iter()
+            .filter(|c| c.status == CheckStatus::Pass)
+            .count(),
+        warn: checks
+            .iter()
+            .filter(|c| c.status == CheckStatus::Warn)
+            .count(),
+        fail: checks
+            .iter()
+            .filter(|c| c.status == CheckStatus::Fail)
+            .count(),
     };
     let has_failures = summary.fail > 0;
     let report = DoctorReport { checks, summary };

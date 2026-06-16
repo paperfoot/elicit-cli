@@ -12,7 +12,12 @@ use crate::config::{self, AppConfig};
 use crate::error::AppError;
 use crate::output::{self, Ctx};
 
-pub fn run(ctx: Ctx, action: ReviewAction, api_key: Option<&str>, config: &AppConfig) -> Result<(), AppError> {
+pub fn run(
+    ctx: Ctx,
+    action: ReviewAction,
+    api_key: Option<&str>,
+    config: &AppConfig,
+) -> Result<(), AppError> {
     let key = config::resolve_api_key(api_key, config)?;
     let client = ElicitClient::new(&config.base_url, &key)?;
 
@@ -55,7 +60,11 @@ fn new(ctx: Ctx, client: &ElicitClient, args: ReviewNewArgs) -> Result<(), AppEr
     let abstract_screening = if has_abstract_screening {
         Some(ScreeningStage {
             criteria: screen_criteria,
-            generate: if args.generate_screening { Some(true) } else { None },
+            generate: if args.generate_screening {
+                Some(true)
+            } else {
+                None
+            },
         })
     } else {
         None
@@ -91,7 +100,11 @@ fn new(ctx: Ctx, client: &ElicitClient, args: ReviewNewArgs) -> Result<(), AppEr
     let extraction = if has_extraction {
         Some(ExtractionStage {
             questions: extraction_questions,
-            generate: if args.generate_extraction { Some(true) } else { None },
+            generate: if args.generate_extraction {
+                Some(true)
+            } else {
+                None
+            },
             use_figures: if args.use_figures { Some(true) } else { None },
         })
     } else {
@@ -112,7 +125,11 @@ fn new(ctx: Ctx, client: &ElicitClient, args: ReviewNewArgs) -> Result<(), AppEr
         title: args.title.clone(),
         protocol_details: args.protocol.clone(),
         is_public: if args.public { Some(true) } else { None },
-        generate_report: if args.generate_report { Some(true) } else { None },
+        generate_report: if args.generate_report {
+            Some(true)
+        } else {
+            None
+        },
         searches,
         abstract_screening,
         fulltext_screening,
@@ -122,7 +139,10 @@ fn new(ctx: Ctx, client: &ElicitClient, args: ReviewNewArgs) -> Result<(), AppEr
     let created = client.create_review(&req)?;
 
     if args.wait {
-        eprintln_human(ctx, &format!("review {} accepted; polling...", created.review_id));
+        eprintln_human(
+            ctx,
+            &format!("review {} accepted; polling...", created.review_id),
+        );
         let final_review = poll_review(
             ctx,
             client,
@@ -174,7 +194,14 @@ fn list(ctx: Ctx, client: &ElicitClient, args: ReviewListArgs) -> Result<(), App
             return;
         }
         let mut table = comfy_table::Table::new();
-        table.set_header(vec!["Review ID", "Status", "Stage", "Source", "Created", "Title"]);
+        table.set_header(vec![
+            "Review ID",
+            "Status",
+            "Stage",
+            "Source",
+            "Created",
+            "Title",
+        ]);
         for item in &r.reviews {
             table.add_row(vec![
                 item.review_id.clone(),
@@ -456,7 +483,9 @@ fn extract_err(s: &str) -> AppError {
 /// Split a `NAME:INSTRUCTIONS` argument on the first colon.
 fn split_pair(s: &str, flag: &str) -> Result<(String, String), AppError> {
     match s.split_once(':') {
-        Some((name, instructions)) if !name.trim().is_empty() && !instructions.trim().is_empty() => {
+        Some((name, instructions))
+            if !name.trim().is_empty() && !instructions.trim().is_empty() =>
+        {
             Ok((name.trim().to_string(), instructions.trim().to_string()))
         }
         _ => Err(AppError::invalid_with(
