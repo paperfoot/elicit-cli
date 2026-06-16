@@ -10,9 +10,20 @@ fn elicit() -> Command {
     Command::cargo_bin("elicit").unwrap()
 }
 
+/// A command with an isolated HOME (and XDG_CONFIG_HOME off macOS) so the config
+/// the test writes is the one the binary reads — and parallel tests don't race
+/// over a shared XDG config dir on Linux CI runners.
+fn elicit_home(home: &Path) -> Command {
+    let mut c = elicit();
+    c.env("HOME", home);
+    if !cfg!(target_os = "macos") {
+        c.env("XDG_CONFIG_HOME", home.join(".config"));
+    }
+    c
+}
+
 fn config_path_for_home(home: &Path) -> PathBuf {
-    let out = elicit()
-        .env("HOME", home)
+    let out = elicit_home(home)
         .args(["--json", "config", "path"])
         .output()
         .unwrap();
@@ -33,8 +44,7 @@ fn update_check_with_config(config: &str) -> serde_json::Value {
     let tmp = tempfile::tempdir().unwrap();
     write_config(tmp.path(), config);
 
-    let out = elicit()
-        .env("HOME", tmp.path())
+    let out = elicit_home(tmp.path())
         .args(["--json", "update", "--check"])
         .output()
         .unwrap();
@@ -141,8 +151,7 @@ install_source = "spaceship"
 "#,
     );
 
-    let out = elicit()
-        .env("HOME", tmp.path())
+    let out = elicit_home(tmp.path())
         .args(["--json", "update", "--check"])
         .output()
         .unwrap();
