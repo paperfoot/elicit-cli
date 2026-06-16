@@ -5,7 +5,7 @@
 /// routable in cli.rs, and every flag described exists. Keep this in lockstep
 /// with cli.rs: drift is a P0 bug (the agent_info_contract test guards it).
 pub fn run() {
-    let name = env!("CARGO_PKG_NAME");
+    let name = env!("CARGO_BIN_NAME");
     let config_path = crate::config::config_path();
 
     let info = serde_json::json!({

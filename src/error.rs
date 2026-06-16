@@ -121,18 +121,18 @@ impl AppError {
     pub fn suggestion(&self) -> &str {
         match self {
             Self::InvalidInput(_) => {
-                concat!("Check arguments with: ", env!("CARGO_PKG_NAME"), " --help")
+                concat!("Check arguments with: ", env!("CARGO_BIN_NAME"), " --help")
             }
             Self::Config(_) => concat!(
                 "Set ELICIT_API_KEY or check config with: ",
-                env!("CARGO_PKG_NAME"),
+                env!("CARGO_BIN_NAME"),
                 " config show"
             ),
             Self::Transient(_) | Self::Io(_) => "Retry the command",
             Self::RateLimited(_) => "Wait a moment and retry",
             Self::Update(_) => concat!(
                 "Retry later, or install manually via cargo install ",
-                env!("CARGO_PKG_NAME")
+                env!("CARGO_BIN_NAME")
             ),
             Self::Detailed { suggestion, .. } => suggestion,
         }

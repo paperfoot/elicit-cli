@@ -83,7 +83,7 @@ impl ElicitClient {
         let http = Client::builder()
             .timeout(REQUEST_TIMEOUT)
             .user_agent(concat!(
-                env!("CARGO_PKG_NAME"),
+                env!("CARGO_BIN_NAME"),
                 "/",
                 env!("CARGO_PKG_VERSION")
             ))

@@ -77,7 +77,7 @@ impl Default for UpdateConfig {
             install_source: "auto".into(),
             owner: "paperfoot".into(),
             repo: "elicit-cli".into(),
-            crate_name: "elicit".into(),
+            crate_name: "elicit-cli".into(),
             formula: "elicit".into(),
             tap: "paperfoot/tap".into(),
         }
@@ -91,7 +91,7 @@ pub fn default_base_url() -> String {
 // ── Paths ──────────────────────────────────────────────────────────────────
 
 pub fn config_path() -> PathBuf {
-    directories::ProjectDirs::from("", "", env!("CARGO_PKG_NAME"))
+    directories::ProjectDirs::from("", "", env!("CARGO_BIN_NAME"))
         .map(|d| d.config_dir().to_path_buf())
         .unwrap_or_else(|| PathBuf::from("."))
         .join("config.toml")
